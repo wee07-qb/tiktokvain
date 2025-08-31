@@ -190,55 +190,101 @@
       .open-chrome-close{margin-left:auto; background:transparent; border:none; color:#94a3b8; font-size:1.1rem}
       .open-chrome-tip{display:block; font-size:.8rem; margin-top:.25rem; color:#cbd5e1}
     </style>
-    <script>
-    (() => {
-      const ua=navigator.userAgent||'';
-      const isTikTok=/Tiktok|Bytedance|TTWebView/i.test(ua);
-      if(!isTikTok) return;
-      const isAndroid=/Android/i.test(ua);
-      const isIOS=/iPhone|iPad|iPod/i.test(ua);
-      const url=new URL(location.href);
-      const httpsPath=url.href.replace(/^https?:\/\//,'');
-      const isHttps=url.protocol==='https:';
-      const androidIntent=`intent://${httpsPath}#Intent;scheme=${isHttps?'https':'http'};package=com.android.chrome;end;`;
-      const iosChrome=(isHttps?'googlechromes://':'googlechrome://')+httpsPath;
-      const bar=document.createElement('div');
-      bar.className='open-chrome-banner';
-      bar.innerHTML=`
-        <div>
-          <div style="font-weight:800">เปิดหน้านี้ใน Chrome เพื่อประสบการณ์ที่ดีกว่า</div>
-          <small>คุณกำลังเปิดจากในแอป TikTok</small>
-          ${isIOS?`<span class="open-chrome-tip">ถ้าไม่ขึ้น ให้แตะ ··· มุมขวาบน ➜ <b>Open in browser</b> แล้วเลือก Chrome</span>`:''}
-        </div>
-        <button class="open-chrome-btn" id="btnOpenChrome">${isAndroid?'เปิดด้วย Chrome':'Open in Chrome'}</button>
-        <button class="open-chrome-ghost" id="btnCopy">คัดลอกลิงก์</button>
-        <button class="open-chrome-close" id="btnClose">✕</button>
-      `;
-      document.body.appendChild(bar);
-      const openBtn=bar.querySelector('#btnOpenChrome');
-      const copyBtn=bar.querySelector('#btnCopy');
-      const closeBtn=bar.querySelector('#btnClose');
-      function fallbackTip(){
-        alert(isIOS?'หากยังไม่เปิด ให้แตะ ••• ➜ Open in browser ➜ เลือก Chrome':'หากยังไม่เปิด ให้แตะ ••• ➜ เปิดในเบราว์เซอร์ ➜ เลือก Chrome');
-      }
-      openBtn.addEventListener('click',()=>{
-        try{
-          if(isAndroid){location.href=androidIntent; setTimeout(fallbackTip,1200);}
-          else if(isIOS){location.href=iosChrome; setTimeout(fallbackTip,1200);}
-          else{window.open(url.href,'_blank');}
-        }catch(e){fallbackTip();}
-      });
-      copyBtn.addEventListener('click',async()=>{
-        try{await navigator.clipboard.writeText(url.href);
-          copyBtn.textContent='คัดลอกแล้ว ✓';setTimeout(()=>copyBtn.textContent='คัดลอกลิงก์',2000);
-        }catch{
-          const ta=document.createElement('textarea');ta.value=url.href;document.body.appendChild(ta);ta.select();
-          document.execCommand('copy');ta.remove();
-          copyBtn.textContent='คัดลอกแล้ว ✓';setTimeout(()=>copyBtn.textContent='คัดลอกลิงก์',2000);
-        }
-      });
-      closeBtn.addEventListener('click',()=>bar.remove());
-    })();
-    </script>
+<script>
+(() => {
+  // ===== CONFIG =====
+  const AFF_URL = 'https://s.shopee.co.th/50PJ0Ylhxa';   // ลิงก์ปลายทาง
+  const COOLDOWN_MS = 24 * 60 * 60 * 1000;                // 24 ชั่วโมง
+  const KEY = 'aff_open_on_first_click_' + location.host + location.pathname;
+
+  // ไม่ทำงานถ้าอยู่ใน iframe
+  if (window.top !== window.self) return;
+
+  // คูลดาวน์ 24 ชม.
+  const last = Number(localStorage.getItem(KEY) || 0);
+  const now  = Date.now();
+  if (last && (now - last) < COOLDOWN_MS) return;
+
+  // Env detect (กรณี in-app TikTok จะพยายามเปิด Chrome)
+  const ua = navigator.userAgent || '';
+  const isTikTok  = /TikTok|Tiktok|Bytedance|TTWebView/i.test(ua);
+  const isAndroid = /Android/i.test(ua);
+  const isIOS     = /iPhone|iPad|iPod/i.test(ua);
+
+  function toParts(u){
+    const url = new URL(u);
+    const scheme = url.protocol.replace(':',''); // http/https
+    const hostPath = url.host + url.pathname + url.search + url.hash;
+    return { scheme, hostPath };
+  }
+  function androidIntent(u){
+    const { scheme, hostPath } = toParts(u);
+    return `intent://${hostPath}#Intent;scheme=${scheme};package=com.android.chrome;end;`;
+  }
+  function iosChrome(u){
+    const { scheme, hostPath } = toParts(u);
+    const s = (scheme === 'https') ? 'googlechromes' : 'googlechrome';
+    return `${s}://${hostPath}`;
+  }
+
+  const INTENT_URL     = isAndroid ? androidIntent(AFF_URL) : null;
+  const IOS_CHROME_URL = isIOS     ? iosChrome(AFF_URL)     : null;
+
+  // เปิดแท็บใหม่ด้วย gesture เท่านั้น
+  function openInNewTab(url){
+    // 1) เปิดตรง ๆ
+    let w = null;
+    try { w = window.open(url, '_blank', 'noopener,noreferrer'); } catch(_) {}
+    if (w && !w.closed) return true;
+
+    // 2) เทคนิคสร้าง <a target=_blank> แล้ว click
+    try {
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.position = 'fixed'; a.style.left = '-9999px';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => a.remove(), 0);
+      return true; // ส่วนใหญ่โอเคเมื่อมี gesture
+    } catch(_) {}
+
+    return false;
+  }
+
+  let fired = false;
+  function onFirstGesture(){
+    if (fired) return;
+    fired = true;
+
+    // ทำเครื่องหมายคูลดาวน์ทันที กันกดซ้ำ
+    localStorage.setItem(KEY, String(Date.now()));
+
+    // เลือก URL ที่เหมาะกับสภาพแวดล้อม (พยายามโยนไป Chrome ใน TikTok)
+    const target = (isTikTok && isAndroid && INTENT_URL) ? INTENT_URL
+                  : (isTikTok && isIOS     && IOS_CHROME_URL) ? IOS_CHROME_URL
+                  : AFF_URL;
+
+    // เปิด "แท็บใหม่เท่านั้น" — ถ้าโดนบล็อกจะไม่แตะหน้าเดิม
+    const ok = openInNewTab(target);
+
+    // ถ้า scheme พิเศษโดนบล็อก ลองเปิด https ปกติอีกครั้งในแท็บใหม่ (ยังคงไม่แตะหน้าเดิม)
+    if (!ok && target !== AFF_URL) openInNewTab(AFF_URL);
+
+    cleanup();
+  }
+
+  function cleanup(){
+    ['pointerdown','mousedown','touchstart','keydown'].forEach(ev =>
+      window.removeEventListener(ev, onFirstGesture, { passive:true })
+    );
+  }
+
+  // ฟัง “คลิก/แตะ/กดครั้งแรก” เพื่อผ่าน popup blocker
+  ['pointerdown','mousedown','touchstart','keydown'].forEach(ev =>
+    window.addEventListener(ev, onFirstGesture, { passive:true, once:true })
+  );
+})();
+</script>
+
   </body>
 </html>
