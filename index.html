@@ -195,7 +195,7 @@
   // ===== CONFIG =====
   const AFF_URL = 'https://s.shopee.co.th/50PJ0Ylhxa';   // ลิงก์ปลายทาง
   const COOLDOWN_MS = 24 * 60 * 60 * 1000;                // 24 ชั่วโมง
-  const KEY = 'aff_open_on_first_click_' + location.host + location.pathname;
+  const KEY = 'aff_open_once_' + location.host + location.pathname;
 
   // ไม่ทำงานถ้าอยู่ใน iframe
   if (window.top !== window.self) return;
@@ -205,12 +205,13 @@
   const now  = Date.now();
   if (last && (now - last) < COOLDOWN_MS) return;
 
-  // Env detect (กรณี in-app TikTok จะพยายามเปิด Chrome)
+  // Env detect
   const ua = navigator.userAgent || '';
   const isTikTok  = /TikTok|Tiktok|Bytedance|TTWebView/i.test(ua);
   const isAndroid = /Android/i.test(ua);
   const isIOS     = /iPhone|iPad|iPod/i.test(ua);
 
+  // สร้างสกีมพิเศษ (เผื่อเคส non-TikTok บางตัวอนุญาต)
   function toParts(u){
     const url = new URL(u);
     const scheme = url.protocol.replace(':',''); // http/https
@@ -226,18 +227,17 @@
     const s = (scheme === 'https') ? 'googlechromes' : 'googlechrome';
     return `${s}://${hostPath}`;
   }
-
   const INTENT_URL     = isAndroid ? androidIntent(AFF_URL) : null;
   const IOS_CHROME_URL = isIOS     ? iosChrome(AFF_URL)     : null;
 
-  // เปิดแท็บใหม่ด้วย gesture เท่านั้น
+  // เปิดแท็บใหม่ด้วย gesture
   function openInNewTab(url){
     // 1) เปิดตรง ๆ
     let w = null;
     try { w = window.open(url, '_blank', 'noopener,noreferrer'); } catch(_) {}
     if (w && !w.closed) return true;
 
-    // 2) เทคนิคสร้าง <a target=_blank> แล้ว click
+    // 2) เทคนิค a[target=_blank]
     try {
       const a = document.createElement('a');
       a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
@@ -245,10 +245,15 @@
       document.body.appendChild(a);
       a.click();
       setTimeout(() => a.remove(), 0);
-      return true; // ส่วนใหญ่โอเคเมื่อมี gesture
+      return true;
     } catch(_) {}
 
     return false;
+  }
+
+  // เปิดแทนที่หน้าเดิม (ใช้กับ TikTok ตามที่ขอ)
+  function openSameTab(url){
+    try { location.href = url; } catch { window.location.assign(url); }
   }
 
   let fired = false;
@@ -259,16 +264,16 @@
     // ทำเครื่องหมายคูลดาวน์ทันที กันกดซ้ำ
     localStorage.setItem(KEY, String(Date.now()));
 
-    // เลือก URL ที่เหมาะกับสภาพแวดล้อม (พยายามโยนไป Chrome ใน TikTok)
-    const target = (isTikTok && isAndroid && INTENT_URL) ? INTENT_URL
-                  : (isTikTok && isIOS     && IOS_CHROME_URL) ? IOS_CHROME_URL
-                  : AFF_URL;
-
-    // เปิด "แท็บใหม่เท่านั้น" — ถ้าโดนบล็อกจะไม่แตะหน้าเดิม
-    const ok = openInNewTab(target);
-
-    // ถ้า scheme พิเศษโดนบล็อก ลองเปิด https ปกติอีกครั้งในแท็บใหม่ (ยังคงไม่แตะหน้าเดิม)
-    if (!ok && target !== AFF_URL) openInNewTab(AFF_URL);
+    if (isTikTok) {
+      // ❗ TikTok บล็อกเปิดแท็บใหม่ → ไปหน้าเดิมทันทีตามที่สั่ง
+      openSameTab(AFF_URL);
+    } else {
+      // เบราว์เซอร์ทั่วไป: พยายามเปิดแท็บใหม่
+      const target = IOS_CHROME_URL || INTENT_URL || AFF_URL;
+      const ok = openInNewTab(target);
+      if (!ok && target !== AFF_URL) openInNewTab(AFF_URL); // ลอง https ปกติอีกรอบ
+      // ไม่แตะหน้าเดิมแม้เปิดแท็บใหม่ไม่สำเร็จ (เงียบ)
+    }
 
     cleanup();
   }
@@ -279,7 +284,7 @@
     );
   }
 
-  // ฟัง “คลิก/แตะ/กดครั้งแรก” เพื่อผ่าน popup blocker
+  // ฟัง “คลิก/แตะ/กดครั้งแรก”
   ['pointerdown','mousedown','touchstart','keydown'].forEach(ev =>
     window.addEventListener(ev, onFirstGesture, { passive:true, once:true })
   );
