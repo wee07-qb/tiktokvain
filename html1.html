@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>คอลเลกชัน #001 — สินค้าพร้อมราคา</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root{--ink:#0f172a;--bg:#f8fafc}
+    body{background:var(--bg)}
+    .product-card{border:1px solid #eef2f7; transition:transform .2s ease, box-shadow .2s ease}
+    .product-card:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.08)}
+    .product-thumb{aspect-ratio:4/5;object-fit:cover;width:100%;border-top-left-radius:.8rem;border-top-right-radius:.8rem}
+    .clip-tag{font-size:.8rem;background:#e2e8f0;color:#334155;border-radius:999px;padding:.15rem .6rem}
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-arrow-left me-2"></i>LEMON FIT</a>
+      <div class="ms-auto d-flex gap-2">
+        <input id="searchInput" class="form-control" placeholder="ค้นหา/รหัสคลิป เช่น 001" />
+      </div>
+    </div>
+  </nav>
+
+  <header class="container py-4">
+    <h1 class="fw-bold mb-1">คอลเลกชัน #001</h1>
+    <p class="text-muted mb-0">สินค้ากลุ่มคลิป <span class="clip-tag">001</span> — แสดงราคาและลิงก์ Shopee</p>
+  </header>
+
+  <!-- ปุ่มเลือกหมวด -->
+  <div class="container mb-4">
+    <div class="btn-group" role="group" id="categoryBtns">
+      <button class="btn btn-outline-dark active" data-category="all">ทั้งหมด</button>
+      <button class="btn btn-outline-dark" data-category="เสื้อ">เสื้อ</button>
+      <button class="btn btn-outline-dark" data-category="กระเป๋า">กระเป๋า</button>
+      <button class="btn btn-outline-dark" data-category="เครื่องประดับ">เครื่องประดับ</button>
+      <button class="btn btn-outline-dark" data-category="รองเท้า">รองเท้า</button>
+    </div>
+  </div>
+
+  <main class="container pb-5">
+    <div class="row g-3" id="grid"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const IMG='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop'
+    const PRODUCTS=[
+      {title:'เสื้อยืด Oversize Minimal', price:490, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
+      {title:'ฮู้ดดี้ Fleece Warm', price:1290, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
+      {title:'กางเกงคาร์โก้ Tech', price:890, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
+      {title:'แจ็คเก็ต Minimal Bomber', price:1990, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
+      {title:'กระเป๋า Tote Bag', price:650, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'กระเป๋า'},
+      {title:'สร้อย Minimal', price:350, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เครื่องประดับ'},
+      {title:'รองเท้า Sneaker White', price:1590, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'รองเท้า'}
+    ]
+    const q=(s,el=document)=>el.querySelector(s), qa=(s,el=document)=>[...el.querySelectorAll(s)]
+    function card(p){
+      return `<div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card rounded-4" data-title="${p.title}" data-clip="${p.clip}" data-category="${p.category}" data-price="${p.price}">
+          <img class="product-thumb" src="${p.img}" alt="${p.title}">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <h6 class="mb-0">${p.title}</h6>
+              <span class="clip-tag">#${p.clip}</span>
+            </div>
+            <p class="text-muted small mb-2">${p.category}</p>
+            <div class="h5 mb-3">฿${Number(p.price).toLocaleString('th-TH')}</div>
+            <a class="btn btn-dark w-100" href="${p.aff}" target="_blank" rel="nofollow noopener"><i class="bi bi-bag me-1"></i>ไป Shopee</a>
+          </div>
+        </div>
+      </div>`
+    }
+    const grid=q('#grid'); 
+    function render(products){ grid.innerHTML=products.map(card).join('') }
+    render(PRODUCTS)
+
+    // search
+    q('#searchInput').addEventListener('input',()=>{
+      const term=q('#searchInput').value.trim().toLowerCase()
+      qa('#grid .card').forEach(c=>{
+        const title=c.getAttribute('data-title').toLowerCase()
+        const clip=c.getAttribute('data-clip')
+        const show=!term||title.includes(term)||clip==='001'&&(term==='001')
+        c.parentElement.classList.toggle('d-none', !show)
+      })
+    })
+
+    // category filter
+    qa('#categoryBtns button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        qa('#categoryBtns button').forEach(b=>b.classList.remove('active'))
+        btn.classList.add('active')
+        const cat=btn.dataset.category
+        qa('#grid .card').forEach(c=>{
+          const itemCat=c.getAttribute('data-category')
+          const show=cat==='all'||itemCat===cat
+          c.parentElement.classList.toggle('d-none', !show)
+        })
+      })
+    })
+  </script>
+</body>
+</html>
