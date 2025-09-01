@@ -13,6 +13,7 @@
     .product-card:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.08)}
     .product-thumb{aspect-ratio:4/5;object-fit:cover;width:100%;border-top-left-radius:.8rem;border-top-right-radius:.8rem}
     .clip-tag{font-size:.8rem;background:#e2e8f0;color:#334155;border-radius:999px;padding:.15rem .6rem}
+    .platform{font-size:.75rem}
   </style>
 </head>
 <body>
@@ -27,17 +28,21 @@
 
   <header class="container py-4">
     <h1 class="fw-bold mb-1">คอลเลกชัน #001</h1>
-    <p class="text-muted mb-0">สินค้ากลุ่มคลิป <span class="clip-tag">001</span> — แสดงราคาและลิงก์ Shopee</p>
+    <p class="text-muted mb-0">สินค้ากลุ่มคลิป <span class="clip-tag">001</span> — ลิงก์ Shopee/Lazada พร้อมรูป</p>
   </header>
 
   <!-- ปุ่มเลือกหมวด -->
   <div class="container mb-4">
-    <div class="btn-group" role="group" id="categoryBtns">
+    <div class="btn-group flex-wrap" role="group" id="categoryBtns">
       <button class="btn btn-outline-dark active" data-category="all">ทั้งหมด</button>
       <button class="btn btn-outline-dark" data-category="เสื้อ">เสื้อ</button>
-      <button class="btn btn-outline-dark" data-category="กระเป๋า">กระเป๋า</button>
+      <button class="btn btn-outline-dark" data-category="เชิ้ต">เชิ้ต</button>
+      <button class="btn btn-outline-dark" data-category="หมวก">หมวก</button>
+      <button class="btn btn-outline-dark" data-category="กางเกง">กางเกง</button>
+      <button class="btn btn-outline-dark" data-category="ยีนส์">ยีนส์</button>
       <button class="btn btn-outline-dark" data-category="เครื่องประดับ">เครื่องประดับ</button>
       <button class="btn btn-outline-dark" data-category="รองเท้า">รองเท้า</button>
+      <button class="btn btn-outline-dark" data-category="ลิงก์รวม">ลิงก์รวม</button>
     </div>
   </div>
 
@@ -47,44 +52,85 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const IMG='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop'
+    // รูปตัวอย่างอัตโนมัติ (Unsplash Featured ตามหมวด)
+    const PLACEHOLDER = {
+      'เสื้อ': 'https://source.unsplash.com/800x1000/?tshirt,clothing,minimal',
+      'เชิ้ต': 'https://source.unsplash.com/800x1000/?plaid,shirt,men',
+      'หมวก': 'https://source.unsplash.com/800x1000/?cap,hat,fashion',
+      'กางเกง': 'https://source.unsplash.com/800x1000/?pants,clothing,men',
+      'ยีนส์': 'https://source.unsplash.com/800x1000/?jeans,denim',
+      'เครื่องประดับ': 'https://source.unsplash.com/800x1000/?necklace,jewelry,minimal',
+      'รองเท้า': 'https://source.unsplash.com/800x1000/?sneakers,shoes',
+      'ลิงก์รวม': 'https://source.unsplash.com/800x1000/?shopping,bags'
+    }
+
+    // ====== สินค้า (จากลิงก์ที่ให้) ======
     const PRODUCTS=[
-      {title:'เสื้อยืด Oversize Minimal', price:490, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
-      {title:'ฮู้ดดี้ Fleece Warm', price:1290, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
-      {title:'กางเกงคาร์โก้ Tech', price:890, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
-      {title:'แจ็คเก็ต Minimal Bomber', price:1990, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เสื้อ'},
-      {title:'กระเป๋า Tote Bag', price:650, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'กระเป๋า'},
-      {title:'สร้อย Minimal', price:350, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'เครื่องประดับ'},
-      {title:'รองเท้า Sneaker White', price:1590, img:IMG, aff:'https://collshp.com/vian628', clip:'001', category:'รองเท้า'}
+      {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:null, aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'},
+      {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:null, aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'},
+      {title:'กางเกงลำลองผู้ชายสไตล์เกาหลี รุ่นอินเทรนด์ (2024)', price:null, img:null, aff:'https://s.shopee.co.th/60Hs0V6Zuf', clip:'001', category:'กางเกง'},
+      {title:'W6488 กางเกงขายาว เอวสม็อค มีกระเป๋า ทรงขากระบอก (WG.WE)', price:null, img:null, aff:'https://s.shopee.co.th/6AbICo5wZg', clip:'001', category:'กางเกง'},
+      {title:'NORMAL.DAY BAGGY JEANS รุ่น WHISKERS ยีนส์ทรงกระบอกใหญ่', price:null, img:null, aff:'https://s.shopee.co.th/4fmUQKVWrZ', clip:'001', category:'ยีนส์'},
+      {title:'Lucine.jeans กระบอกลิซ่า 2 ความยาว ยีนส์เฟดสนิมอ่อน', price:null, img:null, aff:'https://s.shopee.co.th/4q5ucdUtWa', clip:'001', category:'ยีนส์'},
+      {title:'Lazada รวมดีล #1', price:null, img:null, aff:'https://s.lazada.co.th/s.zIIl2?cc', clip:'001', category:'ลิงก์รวม'},
+      {title:'Lazada รวมดีล #2', price:null, img:null, aff:'https://s.lazada.co.th/s.zIIjP?cc', clip:'001', category:'ลิงก์รวม'},
+      {title:'Aone รุ่น O#002 เสื้อไหมพรมคอกลม ทรงรัดรูป สไตล์เกาหลี', price:null, img:null, aff:'https://s.shopee.co.th/4AqDpfrmQp', clip:'001', category:'เสื้อ'},
+      {title:'เสื้อท็อปแขนสั้นคอปก เฮนลีย์ สไตล์เกาหลี', price:null, img:null, aff:'https://s.shopee.co.th/3ftxEktgRk', clip:'001', category:'เสื้อ'},
+      {title:'Baggy Jeans กางเกงยีนส์ผู้ชายขากระบอกใหญ่ สตรีท', price:null, img:null, aff:'https://s.shopee.co.th/3qDNR3t36n', clip:'001', category:'ยีนส์'},
+      {title:'Baolongxin เสื้อแขนยาวลายสก๊อตย้อนยุค คู่รัก ทรงหลวม', price:null, img:null, aff:'https://s.shopee.co.th/4fmUQr4ejE', clip:'001', category:'เชิ้ต'},
+      {title:'เสื้อโปโลผู้ชายฤดูร้อน ลำลอง ไซซ์ใหญ่', price:null, img:null, aff:'https://s.shopee.co.th/4q5udA41OH', clip:'001', category:'เสื้อ'},
+      {title:'Houch กางเกงวอร์มผู้ชาย ระบายอากาศ ใส่สบาย', price:null, img:null, aff:'https://s.shopee.co.th/50PKpT3O3K', clip:'001', category:'กางเกง'},
+      {title:'TLHGQ กางเกงคาร์โก้เอวสูงหนัง สีดำ', price:null, img:null, aff:'https://s.shopee.co.th/5Ail1m2kiN', clip:'001', category:'กางเกง'}
     ]
+
+    // Helper เลือกรูปตามหมวดถ้าไม่ได้กำหนด
+    const withImage = p => ({...p, img: p.img || PLACEHOLDER[p.category] || 'https://source.unsplash.com/800x1000/?fashion'});
+
     const q=(s,el=document)=>el.querySelector(s), qa=(s,el=document)=>[...el.querySelectorAll(s)]
+
+    function platformFrom(url){
+      try{
+        const h = new URL(url).hostname
+        if(/shopee/gi.test(h)) return {name:'Shopee', icon:'bi-bag', color:'text-bg-warning'}
+        if(/lazada/gi.test(h)) return {name:'Lazada', icon:'bi-bag', color:'text-bg-primary'}
+      }catch{}
+      return {name:'Shop', icon:'bi-bag', color:'text-bg-secondary'}
+    }
+
     function card(p){
+      const pf = platformFrom(p.aff)
+      const priceHTML = p.price ? `฿${Number(p.price).toLocaleString('th-TH')}` : `<span class="badge text-bg-light">ดูราคาที่ร้าน</span>`
       return `<div class="col-6 col-md-4 col-lg-3">
-        <div class="card product-card rounded-4" data-title="${p.title}" data-clip="${p.clip}" data-category="${p.category}" data-price="${p.price}">
+        <div class="card product-card rounded-4" data-title="${p.title}" data-clip="${p.clip}" data-category="${p.category}" data-price="${p.price ?? ''}">
           <img class="product-thumb" src="${p.img}" alt="${p.title}">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-1">
               <h6 class="mb-0">${p.title}</h6>
               <span class="clip-tag">#${p.clip}</span>
             </div>
-            <p class="text-muted small mb-2">${p.category}</p>
-            <div class="h5 mb-3">฿${Number(p.price).toLocaleString('th-TH')}</div>
-            <a class="btn btn-dark w-100" href="${p.aff}" target="_blank" rel="nofollow noopener"><i class="bi bi-bag me-1"></i>ไป Shopee</a>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="text-muted small">${p.category}</span>
+              <span class="badge ${pf.color} platform"><i class="bi ${pf.icon} me-1"></i>${pf.name}</span>
+            </div>
+            <div class="h6 mb-3">${priceHTML}</div>
+            <a class="btn btn-dark w-100" href="${p.aff}" target="_blank" rel="nofollow sponsored noopener"><i class="bi bi-box-arrow-up-right me-1"></i>ไปที่ร้าน</a>
           </div>
         </div>
       </div>`
     }
+
     const grid=q('#grid'); 
-    function render(products){ grid.innerHTML=products.map(card).join('') }
+    function render(products){ grid.innerHTML=products.map(withImage).map(card).join('') }
     render(PRODUCTS)
 
-    // search
+    // search (ตามชื่อ, หมวด, รหัสคลิป)
     q('#searchInput').addEventListener('input',()=>{
       const term=q('#searchInput').value.trim().toLowerCase()
       qa('#grid .card').forEach(c=>{
         const title=c.getAttribute('data-title').toLowerCase()
-        const clip=c.getAttribute('data-clip')
-        const show=!term||title.includes(term)||clip==='001'&&(term==='001')
+        const clip=c.getAttribute('data-clip').toLowerCase()
+        const cat=c.getAttribute('data-category').toLowerCase()
+        const show=!term||title.includes(term)||clip.includes(term)||cat.includes(term)
         c.parentElement.classList.toggle('d-none', !show)
       })
     })
