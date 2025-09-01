@@ -24,7 +24,28 @@
       .collection-tile .thumb{aspect-ratio: 16/10; object-fit: cover; border-radius:.8rem}
       .clip-tag{font-size:.8rem; background:#e2e8f0; color:#334155; border-radius:999px; padding:.15rem .6rem}
 
-
+       #toast {
+      visibility: hidden;
+      min-width: 240px;
+      margin-left: -120px;
+      background: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px;
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      bottom: 30px;
+      font-size: 15px;
+      opacity: 0;
+      transition: opacity 0.5s, bottom 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
   
     </style>
   </head>
@@ -101,8 +122,28 @@
         <div class="d-flex justify-content-between small text-muted">
           <span>© <span id="year"></span> VIAN SHOP</span>
         </div>
+        <div id="toast"></div>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = "show";
+  setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+}
+
+// Detect browser
+const ua = navigator.userAgent || "";
+const isTikTok = /TikTok|Tiktok|Bytedance|TTWebView/i.test(ua);
+
+if (isTikTok) {
+  // ถ้าเปิดจาก TikTok app
+  showToast("คุณกำลังใช้ TikTok Browser — กรุณาเปิดใน Chrome หรือ Safari เพื่อใช้งานเต็มที่");
+} else {
+  // ถ้าเปิดใน Chrome / Safari
+  // ไม่ต้องแสดงข้อความ หรือจะ console.log ไว้เฉย ๆ
+  console.log("เปิดใน Chrome/Safari");
+}
   // ====== CONFIG ======
   const SESSION_NOTICE_KEY = 'aff_notice_shown_session'; // เตือนครั้งเดียวต่อ session
 
