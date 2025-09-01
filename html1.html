@@ -19,7 +19,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-arrow-left me-2"></i>LEMON FIT</a>
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-arrow-left me-2"></i>VIAN SHOP FIT</a>
       <div class="ms-auto d-flex gap-2">
         <input id="searchInput" class="form-control" placeholder="ค้นหา/รหัสคลิป เช่น 001" />
       </div>
@@ -52,6 +52,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+
+    const IMG = [
+      {img1: "https://img.lazcdn.com/g/ff/kf/S280dae01cc1a406397e61617fdab23778.jpg_720x720q80.jpg_.webp"
+
+    }
+  ]
+
     // รูปตัวอย่างอัตโนมัติ (Unsplash Featured ตามหมวด)
     const PLACEHOLDER = {
       'เสื้อ': 'https://source.unsplash.com/800x1000/?tshirt,clothing,minimal',
@@ -66,23 +73,22 @@
 
     // ====== สินค้า (จากลิงก์ที่ให้) ======
     const PRODUCTS=[
-      {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:null, aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'},
-      {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:null, aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'},
-      {title:'กางเกงลำลองผู้ชายสไตล์เกาหลี รุ่นอินเทรนด์ (2024)', price:null, img:null, aff:'https://s.shopee.co.th/60Hs0V6Zuf', clip:'001', category:'กางเกง'},
-      {title:'W6488 กางเกงขายาว เอวสม็อค มีกระเป๋า ทรงขากระบอก (WG.WE)', price:null, img:null, aff:'https://s.shopee.co.th/6AbICo5wZg', clip:'001', category:'กางเกง'},
-      {title:'NORMAL.DAY BAGGY JEANS รุ่น WHISKERS ยีนส์ทรงกระบอกใหญ่', price:null, img:null, aff:'https://s.shopee.co.th/4fmUQKVWrZ', clip:'001', category:'ยีนส์'},
-      {title:'Lucine.jeans กระบอกลิซ่า 2 ความยาว ยีนส์เฟดสนิมอ่อน', price:null, img:null, aff:'https://s.shopee.co.th/4q5ucdUtWa', clip:'001', category:'ยีนส์'},
-      {title:'Lazada รวมดีล #1', price:null, img:null, aff:'https://s.lazada.co.th/s.zIIl2?cc', clip:'001', category:'ลิงก์รวม'},
-      {title:'Lazada รวมดีล #2', price:null, img:null, aff:'https://s.lazada.co.th/s.zIIjP?cc', clip:'001', category:'ลิงก์รวม'},
-      {title:'Aone รุ่น O#002 เสื้อไหมพรมคอกลม ทรงรัดรูป สไตล์เกาหลี', price:null, img:null, aff:'https://s.shopee.co.th/4AqDpfrmQp', clip:'001', category:'เสื้อ'},
-      {title:'เสื้อท็อปแขนสั้นคอปก เฮนลีย์ สไตล์เกาหลี', price:null, img:null, aff:'https://s.shopee.co.th/3ftxEktgRk', clip:'001', category:'เสื้อ'},
-      {title:'Baggy Jeans กางเกงยีนส์ผู้ชายขากระบอกใหญ่ สตรีท', price:null, img:null, aff:'https://s.shopee.co.th/3qDNR3t36n', clip:'001', category:'ยีนส์'},
-      {title:'Baolongxin เสื้อแขนยาวลายสก๊อตย้อนยุค คู่รัก ทรงหลวม', price:null, img:null, aff:'https://s.shopee.co.th/4fmUQr4ejE', clip:'001', category:'เชิ้ต'},
-      {title:'เสื้อโปโลผู้ชายฤดูร้อน ลำลอง ไซซ์ใหญ่', price:null, img:null, aff:'https://s.shopee.co.th/4q5udA41OH', clip:'001', category:'เสื้อ'},
-      {title:'Houch กางเกงวอร์มผู้ชาย ระบายอากาศ ใส่สบาย', price:null, img:null, aff:'https://s.shopee.co.th/50PKpT3O3K', clip:'001', category:'กางเกง'},
-      {title:'TLHGQ กางเกงคาร์โก้เอวสูงหนัง สีดำ', price:null, img:null, aff:'https://s.shopee.co.th/5Ail1m2kiN', clip:'001', category:'กางเกง'}
+      {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:'https://img.lazcdn.com/g/ff/kf/S280dae01cc1a406397e61617fdab23778.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'},
+      {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfft-ma11tkml7d0p79.webp', aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'},
+      {title:'กางเกงลำลองผู้ชายสไตล์เกาหลี รุ่นอินเทรนด์ (2024)', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rbnb-m63mp48fz1is19.webp', aff:'https://s.shopee.co.th/60Hs0V6Zuf', clip:'001', category:'กางเกง'},
+      {title:'W6488 กางเกงขายาว เอวสม็อค มีกระเป๋า ทรงขากระบอก (WG.WE)', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0n-mcwhn9lfm92604.webp', aff:'https://s.shopee.co.th/6AbICo5wZg', clip:'001', category:'กางเกง'},
+      {title:'NORMAL.DAY BAGGY JEANS รุ่น WHISKERS ยีนส์ทรงกระบอกใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rasf-m5tx9infyeqydf.webp', aff:'https://s.shopee.co.th/4fmUQKVWrZ', clip:'001', category:'ยีนส์'},
+      {title:'Lucine.jeans กระบอกลิซ่า 2 ความยาว ยีนส์เฟดสนิมอ่อน', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0p-mdk4h0le6d82b3.webp', aff:'https://s.shopee.co.th/4q5ucdUtWa', clip:'001', category:'ยีนส์'},
+      {title:'Korean Dress👚เสื้อยืด🎉 เสื้อแฟชั่นสตรี เสื้อครอปผู้หญิง เสื้อกั๊กผู้หญิง สไตล์สาวฮอต ผ้าเกลียว', price:null, img:'https://img.lazcdn.com/g/p/8ff5aa9b5c715eaa91731e89ad79ccef.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIl2?cc', clip:'001', category:'เสื้อ'},
+      {title:'เสื้อยืดคอกลมผู้ชายระบายอากาศแห้งเร็วสลิมฟิตฤดูร้อนรุ่นบางแขนสั้นสีทึบชั้นบนฐานด้านบน', price:null, img:'https://img.lazcdn.com/g/ff/kf/Sbbf98084de50493bb7f8f0bfae6b8c5fV.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIjP?cc', clip:'001', category:'เสื้อ'},
+      {title:'Aone รุ่น O#002 เสื้อไหมพรมคอกลม ทรงรัดรูป สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/dc1852168d29c90fe931a85ba9960732.webp', aff:'https://s.shopee.co.th/4AqDpfrmQp', clip:'001', category:'เสื้อ'},
+      {title:'เสื้อท็อปแขนสั้นคอปก เฮนลีย์ สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbiwdn6aseggea.webp', aff:'https://s.shopee.co.th/3ftxEktgRk', clip:'001', category:'เสื้อ'},
+      {title:'Baggy Jeans กางเกงยีนส์ผู้ชายขากระบอกใหญ่ สตรีท', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rase-may5f90ktph26a.webp', aff:'https://s.shopee.co.th/3qDNR3t36n', clip:'001', category:'ยีนส์'},
+      {title:'Baolongxin เสื้อแขนยาวลายสก๊อตย้อนยุค คู่รัก ทรงหลวม', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mb54fqqtkr4566.webp', aff:'https://s.shopee.co.th/4fmUQr4ejE', clip:'001', category:'เชิ้ต'},
+      {title:'เสื้อโปโลผู้ชายฤดูร้อน ลำลอง ไซซ์ใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfi0-m9k01bsvapxcb3.webp', aff:'https://s.shopee.co.th/4q5udA41OH', clip:'001', category:'เสื้อ'},
+      {title:'Houch กางเกงวอร์มผู้ชาย ระบายอากาศ ใส่สบาย', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbezyzxduyitcb.webp', aff:'https://s.shopee.co.th/50PKpT3O3K', clip:'001', category:'กางเกง'},
+      {title:'TLHGQ กางเกงคาร์โก้เอวสูงหนัง สีดำ', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rd4c-m6ytl9s17wyica.webp', aff:'https://s.shopee.co.th/5Ail1m2kiN', clip:'001', category:'กางเกง'}
     ]
-
     // Helper เลือกรูปตามหมวดถ้าไม่ได้กำหนด
     const withImage = p => ({...p, img: p.img || PLACEHOLDER[p.category] || 'https://source.unsplash.com/800x1000/?fashion'});
 
