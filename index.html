@@ -146,6 +146,48 @@
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+(function () {
+  const AFF_URL       = 'https://s.shopee.co.th/5ff1bt7qaZ'; // ลิงก์ affiliate ของคุณ
+  const KEY           = 'aff_scroll_once_ts';                 // คีย์ใน localStorage
+  const DELAY_MS      = 2000;                                 // หน่วง 2 วินาที
+  const COOLDOWN_MS   = 24 * 60 * 60 * 1000;                  // 24 ชั่วโมง
+
+  // ไม่ทำงานถ้าเปิดอยู่ใน iframe
+  if (window.top !== window.self) return;
+
+  // ถ้ายังอยู่ในช่วงคูลดาวน์ 24 ชม. ให้ยกเลิก
+  const last = Number(localStorage.getItem(KEY) || 0);
+  if (last && (Date.now() - last) < COOLDOWN_MS) return;
+
+  let armed = false;
+  let timer = null;
+
+  function armRedirect() {
+    if (armed) return;
+    armed = true;
+
+    timer = setTimeout(() => {
+      // บันทึกเวลา เพื่อคูลดาวน์ 24 ชม.
+      localStorage.setItem(KEY, String(Date.now()));
+
+      // ไปหน้า Affiliate (แทนที่แท็บปัจจุบัน)
+      window.location.href = AFF_URL;
+      // ถ้าต้องการเปิดแท็บใหม่แทน ให้ใช้บรรทัดนี้:
+      // window.open(AFF_URL, '_blank', 'noopener');
+
+    }, DELAY_MS);
+  }
+
+  // “การเลื่อนครั้งแรก” ถือเป็น user gesture เพียงพอสำหรับ redirect
+  // once:true => ผูกครั้งเดียวพอ
+  window.addEventListener('scroll', armRedirect,   { passive: true, once: true });
+  window.addEventListener('wheel',  armRedirect,   { passive: true, once: true });
+  window.addEventListener('touchmove', armRedirect,{ passive: true, once: true });
+
+  // (ไม่จำเป็นต้อง cleanup เพราะใช้ once:true)
+})();
+
   // ปี footer
   document.getElementById("year").textContent = new Date().getFullYear();
 
