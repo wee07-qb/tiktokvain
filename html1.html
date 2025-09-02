@@ -136,7 +136,7 @@
     // ===== Detect + Tips =====
     function detectOS(){const ua=navigator.userAgent||'';return{isIOS:/iPhone|iPad|iPod/i.test(ua),isAndroid:/Android/i.test(ua)}}
     function inAppHint(){const ua=navigator.userAgent||'';if(/TikTok|Bytedance|TTWebView/i.test(ua))return'คุณกำลังเปิดจาก <b>TikTok</b>';if(/FBAN|FBAV|Instagram|FB_IAB|FBAN\/Messenger/i.test(ua))return'คุณกำลังเปิดจาก <b>Facebook/Instagram</b>';return'';}
-    function buildTips(){const {isIOS,isAndroid}=detectOS();const appHint=inAppHint();const lines=[];if(appHint)lines.push(`<div class="mb-2">${appHint}</div>`);if(isIOS){lines.push('แนะนำเปิดด้วย <b>Safari</b>')}else if(isAndroid){lines.push('แนะนำเปิดด้วย <b>Chrome</b>')}else{lines.push('ควรคัดลอกลิงก์ไปเปิดใน Chrome/Safari')}return lines.join('<br>');}
+    function buildTips(){const {isIOS,isAndroid}=detectOS();const appHint=inAppHint();const lines=[];if(appHint)lines.push(`<div class="mb-2">${appHint}</div>`);if(isIOS){lines.push('แนะนำเปิดด้วย <b>Safari</b>')}else if(isAndroid){lines.push('แนะนำเปิดด้วย <b>Chrome</b>เพราะว่าบางสินค้าถ้าไม่เปิดในchromeจะไม่สามารถซื้อได้จำเป็นต้องเปิดในบราวเซอร์')}else{lines.push('ควรคัดลอกลิงก์ไปเปิดใน Chrome/Safari')}return lines.join('<br>');}
 
     // ===== Modal =====
     const tipsModal = new bootstrap.Modal('#tipsModal');
