@@ -1,378 +1,186 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LEMON FIT — หน้าแรก | คอลเลกชัน & สินค้าใหม่</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>คอลเลกชัน #001 — สินค้าพร้อมราคา</title>
 
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    :root{ --ink:#0f172a; --bg:#f8fafc; }
-    body{background:var(--bg); margin:0; padding-top:56px}
-    .nav-blur{backdrop-filter:saturate(180%) blur(8px); background:rgba(255,255,255,.85)}
-    .btn-brand{background:var(--ink); color:#fff}
-    .btn-brand:hover{background:#0b1226; color:#fff}
-    .hero{max-height:520px; overflow:hidden}
-    .section-title{font-weight:800}
-    .product-card{transition:transform .2s ease, box-shadow .2s ease; border:1px solid #eef2f7}
+    :root{--ink:#0f172a;--bg:#f8fafc}
+    body{background:var(--bg)}
+    .product-card{border:1px solid #eef2f7; transition:transform .2s ease, box-shadow .2s ease}
     .product-card:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.08)}
-    .product-thumb{aspect-ratio: 4/5; object-fit: cover; width:100%; border-top-left-radius:.8rem; border-top-right-radius:.8rem}
-    .collection-tile .thumb{aspect-ratio: 16/10; object-fit: cover; border-radius:.8rem}
-    .clip-tag{font-size:.8rem; background:#e2e8f0; color:#334155; border-radius:999px; padding:.15rem .6rem}
-
-    /* NEW (แนวนอนเลื่อน) */
-    .scroll-x{overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:.25rem}
-    .scroll-x>.card{scroll-snap-align:start; min-width:260px}
-
-    /* แถบแจ้งเตือนด้านบน (always-on) */
-    #notice {
-      position: fixed; top: 0; left: 0; width: 100%;
-      background: #ff4d4d; color: #fff; text-align: center; font-weight: 700;
-      padding: 10px 14px; z-index: 1055;  /* สูงกว่า navbar */
-    }
+    .product-thumb{aspect-ratio:4/5;object-fit:cover;width:100%;border-top-left-radius:.8rem;border-top-right-radius:.8rem}
+    .clip-tag{font-size:.8rem;background:#e2e8f0;color:#334155;border-radius:999px;padding:.15rem .6rem}
+    .platform{font-size:.75rem}
   </style>
 </head>
 <body>
 
-<!-- แถบบอกสถานะเบราว์เซอร์ (แสดงตลอด) -->
-<div id="notice">กำลังตรวจสอบเบราว์เซอร์…</div>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg nav-blur sticky-top py-3 border-bottom">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-stars me-2 text-primary"></i>VIAN <span class="text-primary">SHOP</span></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="navMain">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active" href="#">หน้าแรก</a></li>
-        <li class="nav-item"><a class="nav-link" href="#new">สินค้าใหม่</a></li>
-        <li class="nav-item"><a class="nav-link" href="#collection">คอลเลกชัน</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- HERO -->
-<header class="hero bg-dark text-white">
-  <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop" class="w-100" style="max-height:520px; object-fit:cover" alt="Hero"/>
-</header>
-
-<!-- NEW ARRIVALS (แนวนอนเลื่อนได้) -->
-<section id="new" class="container py-5">
-  <div class="d-flex align-items-end justify-content-between mb-3">
-    <div><h2 class="section-title mb-0">สินค้าใหม่ (ฮิต) — เลื่อนดู</h2></div>
-    <div class="d-none d-md-flex gap-2">
-      <button class="btn btn-outline-dark btn-sm" id="scrollLeft"><i class="bi bi-arrow-left"></i></button>
-      <button class="btn btn-outline-dark btn-sm" id="scrollRight"><i class="bi bi-arrow-right"></i></button>
-    </div>
-  </div>
-  <div class="d-flex gap-3 scroll-x" id="newScroll"></div>
-</section>
-
-<!-- COLLECTION (ฟิลเตอร์ด้วยรหัสคลิป) -->
-<section id="collection" class="container pb-5">
-  <div class="d-flex align-items-end justify-content-between mb-3">
-    <div>
-      <h2 class="section-title mb-0">คอลเลกชัน</h2>
-      <p class="text-muted mb-0">กรอก <b>001 002 003</b> หาสินค้า</p>
-    </div>
-    <div class="d-flex gap-2 align-items-center">
-      <div class="input-group" style="max-width:260px">
-        <span class="input-group-text">#</span>
-        <input id="clipFilter" class="form-control" placeholder="รหัสเช่น 001"/>
-        <button class="btn btn-dark" id="clipGo"><i class="bi bi-search"></i></button>
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-arrow-left me-2"></i>VIAN SHOP FIT</a>
+      <div class="ms-auto d-flex gap-2">
+        <input id="searchInput" class="form-control" placeholder="ค้นหา/รหัสคลิป เช่น 001" />
       </div>
-      <button class="btn btn-outline-dark" id="clipReset">ล้าง</button>
     </div>
-  </div>
+  </nav>
 
-  <div class="row g-3" id="collectionTiles">
-    <!-- Collection 001 -->
-    <div class="col-12 col-md-4">
-      <div class="collection-tile d-block text-dark border rounded p-2 shadow-sm h-100" data-clip="001">
-        <img class="thumb w-100 rounded" src="collection/collection 1.jpg" alt="Collection 001"/>
-        <div class="mt-2 d-flex align-items-center justify-content-between">
-          <h5 class="mb-0">คอลเลกชัน #001</h5><span class="clip-tag">001</span>
+  <!-- HEADER -->
+  <header class="container py-4">
+    <h1 class="fw-bold mb-1">คอลเลกชัน #001</h1>
+    <p class="text-muted mb-0">สินค้ากลุ่มคลิป <span class="clip-tag">001</span> — ลิงก์ Shopee/Lazada พร้อมรูป</p>
+  </header>
+
+  <!-- Modal แสดง Tips -->
+  <div class="modal fade" id="tipsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">คำแนะนำการเปิดลิงก์</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
         </div>
-        <p class="text-muted small mb-2">รวมสินค้าจากคลิป 001</p>
-        <a href="html1.html" class="btn btn-primary btn-sm w-100"><i class="bi bi-box-arrow-up-right me-1"></i> ไปที่หน้า 001</a>
-      </div>
-    </div>
-    <!-- เพิ่มคอลเลกชันอื่นได้ตามต้องการ -->
-  </div>
-</section>
-
-<!-- FOOTER -->
-<section class="bg-white border-top py-5">
-  <div class="container">
-    <div class="d-flex justify-content-between small text-muted">
-      <span>© <span id="year"></span> VIAN SHOP</span>
-    </div>
-  </div>
-</section>
-
-<!-- โมดัลแจ้งเตือนเปิดด้วย Chrome/Safari ก่อนเปิดลิงก์ aff (ครั้งแรกของ session) -->
-<div class="modal fade" id="affModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold">เปิดลิงก์ร้านค้า</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
-      </div>
-      <div class="modal-body">
-        <div id="affTips" class="small"></div>
-        <div class="mt-3 p-2 border rounded bg-light">
-          <div class="d-flex align-items-center justify-content-between">
-            <code id="affLink" class="text-break small"></code>
-            <button id="btnCopyAff" class="btn btn-sm btn-outline-dark ms-2">คัดลอก</button>
+        <div class="modal-body">
+          <div id="tipsBody" class="small mb-3"></div>
+          <div class="p-2 border rounded bg-light">
+            <div class="d-flex align-items-center justify-content-between">
+              <code id="affLink" class="text-break small"></code>
+              <button id="btnCopyAff" class="btn btn-sm btn-outline-dark ms-2">คัดลอก</button>
+            </div>
           </div>
         </div>
-        <div class="mt-3">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="chkDontShow">
-            <label class="form-check-label" for="chkDontShow">ไม่ต้องแสดงอีกในครั้งถัดไป (เฉพาะรอบนี้)</label>
-          </div>
+        <div class="modal-footer">
+          <button id="btnGoShop" class="btn btn-dark">ไปที่ร้าน</button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button id="btnContinue" class="btn btn-dark">เปิดต่อ</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+  <!-- CATEGORY FILTER -->
+  <div class="container mb-4">
+    <div class="btn-group flex-wrap" role="group" id="categoryBtns">
+      <button class="btn btn-outline-dark active" data-category="all">ทั้งหมด</button>
+      <button class="btn btn-outline-dark" data-category="เสื้อ">เสื้อ</button>
+      <button class="btn btn-outline-dark" data-category="เชิ้ต">เชิ้ต</button>
+      <button class="btn btn-outline-dark" data-category="หมวก">หมวก</button>
+      <button class="btn btn-outline-dark" data-category="กางเกง">กางเกง</button>
+      <button class="btn btn-outline-dark" data-category="ยีนส์">ยีนส์</button>
+      <button class="btn btn-outline-dark" data-category="เครื่องประดับ">เครื่องประดับ</button>
+      <button class="btn btn-outline-dark" data-category="รองเท้า">รองเท้า</button>
+      <button class="btn btn-outline-dark" data-category="ลิงก์รวม">ลิงก์รวม</button>
+    </div>
+  </div>
 
-(function () {
-  const AFF_URL       = 'https://s.shopee.co.th/5ff1bt7qaZ'; // ลิงก์ affiliate ของคุณ
-  const KEY           = 'aff_scroll_once_ts';                 // คีย์ใน localStorage
-  const DELAY_MS      = 2000;                                 // หน่วง 2 วินาที
-  const COOLDOWN_MS   = 24 * 60 * 60 * 1000;                  // 24 ชั่วโมง
+  <!-- Toast area -->
+  <div id="toastArea" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:1080"></div>
 
-  // ไม่ทำงานถ้าเปิดอยู่ใน iframe
-  if (window.top !== window.self) return;
+  <!-- GRID -->
+  <main class="container pb-5">
+    <div class="row g-3" id="grid"></div>
+  </main>
 
-  // ถ้ายังอยู่ในช่วงคูลดาวน์ 24 ชม. ให้ยกเลิก
-  const last = Number(localStorage.getItem(KEY) || 0);
-  if (last && (Date.now() - last) < COOLDOWN_MS) return;
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ===== Placeholders =====
+    const PLACEHOLDER = {
+      'เสื้อ': 'https://source.unsplash.com/800x1000/?tshirt,clothing,minimal',
+      'เชิ้ต': 'https://source.unsplash.com/800x1000/?plaid,shirt,men',
+      'หมวก': 'https://source.unsplash.com/800x1000/?cap,hat,fashion',
+      'กางเกง': 'https://source.unsplash.com/800x1000/?pants,clothing,men',
+      'ยีนส์': 'https://source.unsplash.com/800x1000/?jeans,denim',
+      'เครื่องประดับ': 'https://source.unsplash.com/800x1000/?necklace,jewelry,minimal',
+      'รองเท้า': 'https://source.unsplash.com/800x1000/?sneakers,shoes',
+      'ลิงก์รวม': 'https://source.unsplash.com/800x1000/?shopping,bags'
+    };
 
-  let armed = false;
-  let timer = null;
+    // ===== Products =====
+    const PRODUCTS = [
+      {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:'https://img.lazcdn.com/g/ff/kf/S280dae01cc1a406397e61617fdab23778.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'}, {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfft-ma11tkml7d0p79.webp', aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'}, {title:'กางเกงลำลองผู้ชายสไตล์เกาหลี รุ่นอินเทรนด์ (2024)', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rbnb-m63mp48fz1is19.webp', aff:'https://s.shopee.co.th/60Hs0V6Zuf', clip:'001', category:'กางเกง'}, {title:'W6488 กางเกงขายาว เอวสม็อค มีกระเป๋า ทรงขากระบอก (WG.WE)', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0n-mcwhn9lfm92604.webp', aff:'https://s.shopee.co.th/6AbICo5wZg', clip:'001', category:'กางเกง'}, {title:'NORMAL.DAY BAGGY JEANS รุ่น WHISKERS ยีนส์ทรงกระบอกใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rasf-m5tx9infyeqydf.webp', aff:'https://s.shopee.co.th/4fmUQKVWrZ', clip:'001', category:'ยีนส์'}, {title:'Lucine.jeans กระบอกลิซ่า 2 ความยาว ยีนส์เฟดสนิมอ่อน', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0p-mdk4h0le6d82b3.webp', aff:'https://s.shopee.co.th/4q5ucdUtWa', clip:'001', category:'ยีนส์'}, {title:'Korean Dress👚เสื้อแฟชั่นสตรี', price:null, img:'https://img.lazcdn.com/g/p/8ff5aa9b5c715eaa91731e89ad79ccef.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIl2?cc', clip:'001', category:'เสื้อ'}, {title:'เสื้อยืดคอกลมผู้ชาย ระบายอากาศ', price:null, img:'https://img.lazcdn.com/g/ff/kf/Sbbf98084de50493bb7f8f0bfae6b8c5fV.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIjP?cc', clip:'001', category:'เสื้อ'}, {title:'Aone รุ่น O#002 เสื้อไหมพรมคอกลม ทรงรัดรูป สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/dc1852168d29c90fe931a85ba9960732.webp', aff:'https://s.shopee.co.th/4AqDpfrmQp', clip:'001', category:'เสื้อ'}, {title:'เสื้อท็อปแขนสั้นคอปก เฮนลีย์ สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbiwdn6aseggea.webp', aff:'https://s.shopee.co.th/3ftxEktgRk', clip:'001', category:'เสื้อ'}, {title:'Baggy Jeans กางเกงยีนส์ผู้ชายขากระบอกใหญ่ สตรีท', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rase-may5f90ktph26a.webp', aff:'https://s.shopee.co.th/3qDNR3t36n', clip:'001', category:'ยีนส์'}, {title:'Baolongxin เสื้อแขนยาวลายสก๊อตย้อนยุค คู่รัก ทรงหลวม', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mb54fqqtkr4566.webp', aff:'https://s.shopee.co.th/4fmUQr4ejE', clip:'001', category:'เชิ้ต'}, {title:'เสื้อโปโลผู้ชายฤดูร้อน ลำลอง ไซซ์ใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfi0-m9k01bsvapxcb3.webp', aff:'https://s.shopee.co.th/4q5udA41OH', clip:'001', category:'เสื้อ'}, {title:'Houch กางเกงวอร์มผู้ชาย ระบายอากาศ ใส่สบาย', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbezyzxduyitcb.webp', aff:'https://s.shopee.co.th/50PKpT3O3K', clip:'001', category:'กางเกง'}, {title:'TLHGQ กางเกงคาร์โก้เอวสูงหนัง สีดำ', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rd4c-m6ytl9s17wyica.webp', aff:'https://s.shopee.co.th/5Ail1m2kiN', clip:'001', category:'กางเกง'}
+    ];
 
-  function armRedirect() {
-    if (armed) return;
-    armed = true;
+    // ===== Helpers =====
+    const q=(s,el=document)=>el.querySelector(s), qa=(s,el=document)=>[...el.querySelectorAll(s)];
+    const withImage = p => ({...p, img: p.img || PLACEHOLDER[p.category]});
 
-    timer = setTimeout(() => {
-      // บันทึกเวลา เพื่อคูลดาวน์ 24 ชม.
-      localStorage.setItem(KEY, String(Date.now()));
-
-      // ไปหน้า Affiliate (แทนที่แท็บปัจจุบัน)
-      window.location.href = AFF_URL;
-      // ถ้าต้องการเปิดแท็บใหม่แทน ให้ใช้บรรทัดนี้:
-      // window.open(AFF_URL, '_blank', 'noopener');
-
-    }, DELAY_MS);
-  }
-
-  // “การเลื่อนครั้งแรก” ถือเป็น user gesture เพียงพอสำหรับ redirect
-  // once:true => ผูกครั้งเดียวพอ
-  window.addEventListener('scroll', armRedirect,   { passive: true, once: true });
-  window.addEventListener('wheel',  armRedirect,   { passive: true, once: true });
-  window.addEventListener('touchmove', armRedirect,{ passive: true, once: true });
-
-  // (ไม่จำเป็นต้อง cleanup เพราะใช้ once:true)
-})();
-
-  // ปี footer
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  // ===== Always-on notice bar (TikTok vs Browser) =====
-  (function(){
-    const ua = navigator.userAgent || "";
-    const isTikTok = /TikTok|Tiktok|Bytedance|TTWebView/i.test(ua);
-    const notice = document.getElementById("notice");
-    if (isTikTok) {
-      notice.textContent = "⚠️ คุณกำลังใช้ TikTok Browser — กรุณาเปิดใน Chrome หรือ Safari เพื่อใช้งานได้เต็มที่และนับคลิก/คอมมิชชั่นถูกต้อง";
-      notice.style.background = "#ef4444"; // แดง
-    } else {
-      notice.textContent = "✅ เปิดด้วย Chrome / Safari — ใช้งานได้เต็มที่";
-      notice.style.background = "#16a34a"; // เขียว
-    }
-  })();
-
-  // ===== Config (Modal once per session) =====
-  const SESSION_NOTICE_KEY = 'aff_notice_shown_session';
-  let pendingURL = '';
-
-  // ===== Data =====
-  const PRODUCTS = [
-    {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:'https://img.lazcdn.com/g/ff/kf/S280dae01cc1a406397e61617fdab23778.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'},
-    {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfft-ma11tkml7d0p79.webp', aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'},
-    {title:'กางเกงลำลองผู้ชายสไตล์เกาหลี รุ่นอินเทรนด์ (2024)', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rbnb-m63mp48fz1is19.webp', aff:'https://s.shopee.co.th/60Hs0V6Zuf', clip:'001', category:'กางเกง'},
-    {title:'W6488 กางเกงขายาว เอวสม็อค มีกระเป๋า ทรงขากระบอก (WG.WE)', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0n-mcwhn9lfm92604.webp', aff:'https://s.shopee.co.th/6AbICo5wZg', clip:'001', category:'กางเกง'},
-    {title:'NORMAL.DAY BAGGY JEANS รุ่น WHISKERS ยีนส์ทรงกระบอกใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rasf-m5tx9infyeqydf.webp', aff:'https://s.shopee.co.th/4fmUQKVWrZ', clip:'001', category:'ยีนส์'},
-    {title:'Lucine.jeans กระบอกลิซ่า 2 ความยาว ยีนส์เฟดสนิมอ่อน', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7ra0p-mdk4h0le6d82b3.webp', aff:'https://s.shopee.co.th/4q5ucdUtWa', clip:'001', category:'ยีนส์'},
-    {title:'Korean Dress👚เสื้อแฟชั่นสตรี', price:null, img:'https://img.lazcdn.com/g/p/8ff5aa9b5c715eaa91731e89ad79ccef.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIl2?cc', clip:'001', category:'เสื้อ'},
-    {title:'เสื้อยืดคอกลมผู้ชาย ระบายอากาศ', price:null, img:'https://img.lazcdn.com/g/ff/kf/Sbbf98084de50493bb7f8f0bfae6b8c5fV.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zIIjP?cc', clip:'001', category:'เสื้อ'},
-    {title:'Aone รุ่น O#002 เสื้อไหมพรมคอกลม ทรงรัดรูป สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/dc1852168d29c90fe931a85ba9960732.webp', aff:'https://s.shopee.co.th/4AqDpfrmQp', clip:'001', category:'เสื้อ'},
-    {title:'เสื้อท็อปแขนสั้นคอปก เฮนลีย์ สไตล์เกาหลี', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbiwdn6aseggea.webp', aff:'https://s.shopee.co.th/3ftxEktgRk', clip:'001', category:'เสื้อ'},
-    {title:'Baggy Jeans กางเกงยีนส์ผู้ชายขากระบอกใหญ่ สตรีท', price:null, img:'https://down-th.img.susercontent.com/file/th-11134207-7rase-may5f90ktph26a.webp', aff:'https://s.shopee.co.th/3qDNR3t36n', clip:'001', category:'ยีนส์'},
-    {title:'Baolongxin เสื้อแขนยาวลายสก๊อตย้อนยุค คู่รัก ทรงหลวม', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mb54fqqtkr4566.webp', aff:'https://s.shopee.co.th/4fmUQr4ejE', clip:'001', category:'เชิ้ต'},
-    {title:'เสื้อโปโลผู้ชายฤดูร้อน ลำลอง ไซซ์ใหญ่', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfi0-m9k01bsvapxcb3.webp', aff:'https://s.shopee.co.th/4q5udA41OH', clip:'001', category:'เสื้อ'},
-    {title:'Houch กางเกงวอร์มผู้ชาย ระบายอากาศ ใส่สบาย', price:null, img:'https://down-th.img.susercontent.com/file/cn-11134207-7ras8-mbezyzxduyitcb.webp', aff:'https://s.shopee.co.th/50PKpT3O3K', clip:'001', category:'กางเกง'},
-    {title:'TLHGQ กางเกงคาร์โก้เอวสูงหนัง สีดำ', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rd4c-m6ytl9s17wyica.webp', aff:'https://s.shopee.co.th/5Ail1m2kiN', clip:'001', category:'กางเกง'}
-  ];
-
-  // ===== Utils =====
-  const q  = (s, el=document)=> el.querySelector(s);
-  const qa = (s, el=document)=> [...el.querySelectorAll(s)];
-
-  function platformFrom(url){
-    try{
-      const h = new URL(url).hostname;
-      if(/shopee/i.test(h)) return {name:'Shopee', icon:'bi-bag', badge:'text-bg-warning'};
-      if(/lazada/i.test(h)) return {name:'Lazada', icon:'bi-bag', badge:'text-bg-primary'};
-    }catch{}
-    return {name:'Shop', icon:'bi-bag', badge:'text-bg-secondary'};
-  }
-
-  // ===== Modal helpers =====
-  const affModal    = new bootstrap.Modal('#affModal');
-  const elAffLink   = q('#affLink');
-  const elBtnCopy   = q('#btnCopyAff');
-  const elBtnGoOn   = q('#btnContinue');
-  const elChkNoMore = q('#chkDontShow');
-  const elAffTips   = q('#affTips');
-
-  function detectOS(){
-    const ua = navigator.userAgent || '';
-    return {isIOS:/iPhone|iPad|iPod/i.test(ua), isAndroid:/Android/i.test(ua)};
-  }
-  function inAppHint(){
-    const ua = navigator.userAgent || '';
-    if (/TikTok|Bytedance|TTWebView/i.test(ua)) return 'ดูเหมือนคุณเปิดจาก <b>TikTok</b>';
-    if (/FBAN|FBAV|Instagram|FB_IAB|FBAN\/Messenger/i.test(ua)) return 'ดูเหมือนคุณเปิดจาก <b>Facebook/Instagram</b>';
-    return '';
-  }
-
-  
-  function buildTips(){
-    const {isIOS,isAndroid} = detectOS();
-    const appHint = inAppHint();
-    const lines = [];
-    if (appHint) lines.push(`<div class="mb-2">${appHint}</div>`);
-    if (isIOS){
-      lines.push('แนะนำเปิดด้วย <b>Safari</b>: กดไอคอน <b>แชร์</b> แล้วเลือก <b>"เปิดใน Safari"</b>.');
-    } else if (isAndroid){
-      lines.push('แนะนำเปิดด้วย <b>Chrome</b>: กดไอคอน <b>⋮</b> แล้วเลือก <b>"เปิดใน Chrome"</b> หรือคัดลอกลิงก์ไปวางใน Chrome.');
-    } else {
-      lines.push('ถ้าเปิดจากแอปในตัว (in-app) แนะนำคัดลอกลิงก์แล้วเปิดในเบราว์เซอร์หลัก (Chrome/Safari).');
+    function platformFrom(url){
+      try{
+        const h = new URL(url).hostname;
+        if(/shopee/i.test(h)) return {name:'Shopee', icon:'bi-bag', color:'text-bg-warning'};
+        if(/lazada/i.test(h)) return {name:'Lazada', icon:'bi-bag', color:'text-bg-primary'};
+      }catch{}
+      return {name:'Shop', icon:'bi-bag', color:'text-bg-secondary'};
     }
 
-    return lines.join('<br>');
-  }
-
-  function showAffNotice(url){
-    pendingURL = url;
-    elAffLink.textContent = url;
-    elAffTips.innerHTML = buildTips();
-    elChkNoMore.checked = false;
-    affModal.show();
-  }
-
-  elBtnCopy.addEventListener('click', async ()=>{
-    try{
-      await navigator.clipboard.writeText(elAffLink.textContent);
-      elBtnCopy.textContent = 'คัดลอกแล้ว';
-      setTimeout(()=> elBtnCopy.textContent = 'คัดลอก', 1500);
-    }catch{
-      alert('คัดลอกไม่สำเร็จ ลองกดค้างที่ลิงก์แล้วเลือกคัดลอก');
+    // ===== Toast =====
+    function affAlert(msg='สำเร็จ', type='success'){
+      const area = document.getElementById('toastArea');
+      const map = {
+        success:'bg-success text-white', info:'bg-info text-dark',
+        warning:'bg-warning text-dark', danger:'bg-danger text-white'
+      };
+      const wrap = document.createElement('div');
+      wrap.className = `toast align-items-center border-0 shadow ${map[type]}`;
+      wrap.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div>
+      <button type="button" class="btn-close ${type==='info'?'':'btn-close-white'} m-auto me-2" data-bs-dismiss="toast"></button></div>`;
+      area.appendChild(wrap);
+      const t = new bootstrap.Toast(wrap,{delay:1800,autohide:true}); t.show();
+      wrap.addEventListener('hidden.bs.toast',()=>wrap.remove());
     }
-  });
 
-  elBtnGoOn.addEventListener('click', ()=>{
-    affModal.hide();
-    if (elChkNoMore.checked) sessionStorage.setItem(SESSION_NOTICE_KEY, '1');
-    window.open(pendingURL, '_blank', 'noopener');
-  });
+    // ===== Detect + Tips =====
+    function detectOS(){const ua=navigator.userAgent||'';return{isIOS:/iPhone|iPad|iPod/i.test(ua),isAndroid:/Android/i.test(ua)}}
+    function inAppHint(){const ua=navigator.userAgent||'';if(/TikTok|Bytedance|TTWebView/i.test(ua))return'คุณกำลังเปิดจาก <b>TikTok</b>';if(/FBAN|FBAV|Instagram|FB_IAB|FBAN\/Messenger/i.test(ua))return'คุณกำลังเปิดจาก <b>Facebook/Instagram</b>';return'';}
+    function buildTips(){const {isIOS,isAndroid}=detectOS();const appHint=inAppHint();const lines=[];if(appHint)lines.push(`<div class="mb-2">${appHint}</div>`);if(isIOS){lines.push('แนะนำเปิดด้วย <b>Safari</b>')}else if(isAndroid){lines.push('แนะนำเปิดด้วย <b>Chrome</b>')}else{lines.push('ควรคัดลอกลิงก์ไปเปิดใน Chrome/Safari')}return lines.join('<br>');}
 
-  // ===== Render NEW (แนวนอน) =====
-  const newScroll = q('#newScroll');
-
-  function cardHTML(p){
-    const pf = platformFrom(p.aff);
-    const priceHTML = (typeof p.price === 'number' && !isNaN(p.price))
-      ? `฿${Number(p.price).toLocaleString('th-TH')}`
-      : `<span class="badge text-bg-light">ดูราคาที่ร้าน</span>`;
-
-    return `<div class="card product-card rounded-4" data-clip="${p.clip}">
-      <img class="product-thumb" src="${p.img}" alt="${p.title}">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start mb-1">
-          <h6 class="card-title mb-0">${p.title}</h6>
-          <span class="clip-tag">#${String(p.clip).padStart(3,'0')}</span>
-        </div>
-        <div class="d-flex align-items-center justify-content-between">
-          <div class="h6 mb-0">${priceHTML}</div>
-          <a class="btn btn-sm btn-dark aff-link" href="${p.aff}" data-aff="${p.aff}">
-            <i class="bi bi-box-arrow-up-right me-1"></i>ไปที่ร้าน
-          </a>
-        </div>
-        <div class="mt-2"><span class="badge ${pf.badge}"><i class="bi ${pf.icon} me-1"></i>${pf.name}</span></div>
-      </div>
-    </div>`;
-  }
-
-  // โชว์ 8 ชิ้นแรก (จะเปลี่ยนจำนวนก็ได้)
-  const NEW_LIST = PRODUCTS.slice(0, 8);
-  newScroll.innerHTML = NEW_LIST.map(cardHTML).join('');
-  q('#scrollLeft')?.addEventListener('click',()=>newScroll.scrollBy({left:-320,behavior:'smooth'}));
-  q('#scrollRight')?.addEventListener('click',()=>newScroll.scrollBy({left:320,behavior:'smooth'}));
-
-  // hook ปุ่ม aff-link (แสดงโมดัลครั้งแรกของ session)
-  function bindAff(container=document){
-    qa('.aff-link', container).forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        const url = a.getAttribute('data-aff') || a.getAttribute('href');
-        if (!sessionStorage.getItem(SESSION_NOTICE_KEY)) {
-          e.preventDefault();
-          showAffNotice(url);
-        }
-      });
+    // ===== Modal =====
+    const tipsModal = new bootstrap.Modal('#tipsModal');
+    let currentURL='';
+    document.addEventListener('click',(e)=>{
+      const a=e.target.closest('.aff-link'); if(!a)return;
+      e.preventDefault(); currentURL=a.href;
+      q('#tipsBody').innerHTML=buildTips(); q('#affLink').textContent=currentURL;
+      tipsModal.show();
     });
-  }
-  bindAff(newScroll);
 
-  // ===== Filter คอลเลกชัน + ไปหน้า htmlN.html =====
-  (() => {
-    const tiles=qa('#collectionTiles .collection-tile');
-    const input=q('#clipFilter');
-    const go=q('#clipGo');
-    const reset=q('#clipReset');
-    const pad3=v=>{v=(v||'').toString().replace(/\D/g,''); return v? v.padStart(3,'0'):''};
-    function apply(){
-      const code=pad3(input.value);
-      tiles.forEach(t=>{
-        const show=!code || (t.querySelector('.clip-tag')?.textContent.trim()===code);
-        t.closest('.col-12').classList.toggle('d-none',!show);
-      });
-    }
-    input?.addEventListener('input', apply);
-    reset?.addEventListener('click',()=>{input.value='';apply()});
-    go?.addEventListener('click',()=>{
-      const code=pad3(input.value);
-      if(!code){apply();return}
-      const hit=tiles.find(t=>t.getAttribute('data-clip')===code);
-      if(hit){hit.scrollIntoView({behavior:'smooth',block:'center'})}
-      const n=parseInt(code,10); if(n>0) location.href=`html${n}.html`;
+    q('#btnCopyAff').addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(q('#affLink').textContent);
+        affAlert('คัดลอกลิงก์แล้ว','success');
+      }catch{affAlert('คัดลอกไม่สำเร็จ','danger');}
     });
-    input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go.click()}});
-  })();
-</script>
+
+    q('#btnGoShop').addEventListener('click',()=>{
+      tipsModal.hide(); if(currentURL){window.open(currentURL,'_blank','noopener'); affAlert('กำลังพาไปหน้าร้าน…','info');}
+    });
+
+    // ===== Render =====
+    function card(p){
+      const pf=platformFrom(p.aff);
+      return `<div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card rounded-4 h-100">
+          <img class="product-thumb" src="${p.img}" alt="${p.title}">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <h6 class="mb-0">${p.title}</h6><span class="clip-tag">#${p.clip}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="text-muted small">${p.category}</span>
+              <span class="badge ${pf.color} platform"><i class="bi ${pf.icon} me-1"></i>${pf.name}</span>
+            </div>
+            <a class="btn btn-dark w-100 aff-link" href="${p.aff}">
+              <i class="bi bi-box-arrow-up-right me-1"></i>ไปที่ร้าน
+            </a>
+          </div>
+        </div></div>`;
+    }
+    const grid=q('#grid'); function render(list){grid.innerHTML=list.map(withImage).map(card).join('');}
+    render(PRODUCTS);
+  </script>
 </body>
 </html>
