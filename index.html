@@ -22,6 +22,10 @@
     .collection-tile .thumb{aspect-ratio: 16/10; object-fit: cover; border-radius:.8rem}
     .clip-tag{font-size:.8rem; background:#e2e8f0; color:#334155; border-radius:999px; padding:.15rem .6rem}
 
+    /* NEW (แนวนอนเลื่อน) */
+    .scroll-x{overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:.25rem}
+    .scroll-x>.card{scroll-snap-align:start; min-width:260px}
+
     /* แถบแจ้งเตือนด้านบน (always-on) */
     #notice {
       position: fixed; top: 0; left: 0; width: 100%;
@@ -55,12 +59,16 @@
   <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop" class="w-100" style="max-height:520px; object-fit:cover" alt="Hero"/>
 </header>
 
-<!-- NEW ARRIVALS -->
+<!-- NEW ARRIVALS (แนวนอนเลื่อนได้) -->
 <section id="new" class="container py-5">
   <div class="d-flex align-items-end justify-content-between mb-3">
-    <div><h2 class="section-title mb-0">สินค้าใหม่ (ฮิต)</h2></div>
+    <div><h2 class="section-title mb-0">สินค้าใหม่ (ฮิต) — เลื่อนดู</h2></div>
+    <div class="d-none d-md-flex gap-2">
+      <button class="btn btn-outline-dark btn-sm" id="scrollLeft"><i class="bi bi-arrow-left"></i></button>
+      <button class="btn btn-outline-dark btn-sm" id="scrollRight"><i class="bi bi-arrow-right"></i></button>
+    </div>
   </div>
-  <div class="row g-3" id="grid"></div>
+  <div class="d-flex gap-3 scroll-x" id="newScroll"></div>
 </section>
 
 <!-- COLLECTION (ฟิลเตอร์ด้วยรหัสคลิป) -->
@@ -79,6 +87,21 @@
       <button class="btn btn-outline-dark" id="clipReset">ล้าง</button>
     </div>
   </div>
+
+  <div class="row g-3" id="collectionTiles">
+    <!-- Collection 001 -->
+    <div class="col-12 col-md-4">
+      <div class="collection-tile d-block text-dark border rounded p-2 shadow-sm h-100" data-clip="001">
+        <img class="thumb w-100 rounded" src="collection/collection 1.jpg" alt="Collection 001"/>
+        <div class="mt-2 d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">คอลเลกชัน #001</h5><span class="clip-tag">001</span>
+        </div>
+        <p class="text-muted small mb-2">รวมสินค้าจากคลิป 001</p>
+        <a href="html1.html" class="btn btn-primary btn-sm w-100"><i class="bi bi-box-arrow-up-right me-1"></i> ไปที่หน้า 001</a>
+      </div>
+    </div>
+    <!-- เพิ่มคอลเลกชันอื่นได้ตามต้องการ -->
+  </div>
 </section>
 
 <!-- FOOTER -->
@@ -90,7 +113,7 @@
   </div>
 </section>
 
-<!-- โมดัลแจ้งเตือนเปิดด้วย Chrome/Safari ก่อนเปิดลิงก์ aff ครั้งแรกของ session -->
+<!-- โมดัลแจ้งเตือนเปิดด้วย Chrome/Safari ก่อนเปิดลิงก์ aff (ครั้งแรกของ session) -->
 <div class="modal fade" id="affModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4">
@@ -140,22 +163,11 @@
     }
   })();
 
-  // ===== Config =====
-  const SESSION_NOTICE_KEY = 'aff_notice_shown_session'; // เตือนครั้งเดียวต่อ session
+  // ===== Config (Modal once per session) =====
+  const SESSION_NOTICE_KEY = 'aff_notice_shown_session';
   let pendingURL = '';
 
   // ===== Data =====
-  const PLACEHOLDER = {
-    'เสื้อ': 'https://source.unsplash.com/800x1000/?tshirt,clothing,minimal',
-    'เชิ้ต': 'https://source.unsplash.com/800x1000/?plaid,shirt,men',
-    'หมวก': 'https://source.unsplash.com/800x1000/?cap,hat,fashion',
-    'กางเกง': 'https://source.unsplash.com/800x1000/?pants,clothing,men',
-    'ยีนส์': 'https://source.unsplash.com/800x1000/?jeans,denim',
-    'เครื่องประดับ': 'https://source.unsplash.com/800x1000/?necklace,jewelry,minimal',
-    'รองเท้า': 'https://source.unsplash.com/800x1000/?sneakers,shoes',
-    'ลิงก์รวม': 'https://source.unsplash.com/800x1000/?shopping,bags'
-  };
-
   const PRODUCTS = [
     {title:'เสื้อยืดสลิมฟิตผู้หญิง ลายสุนัขลายจุด สไตล์ย้อนยุค/อเมริกัน', price:null, img:'https://img.lazcdn.com/g/ff/kf/S280dae01cc1a406397e61617fdab23778.jpg_720x720q80.jpg_.webp', aff:'https://s.lazada.co.th/s.zqJd7', clip:'001', category:'เสื้อ'},
     {title:'MELODYGOODS หมวกเบสบอล ปักตัวอักษร สไตล์เรโทร/เกาหลี ปรับได้', price:null, img:'https://down-th.img.susercontent.com/file/sg-11134201-7rfft-ma11tkml7d0p79.webp', aff:'https://s.shopee.co.th/5ff1bt7qaZ', clip:'001', category:'หมวก'},
@@ -177,7 +189,6 @@
   // ===== Utils =====
   const q  = (s, el=document)=> el.querySelector(s);
   const qa = (s, el=document)=> [...el.querySelectorAll(s)];
-  const withImage = p => ({...p, img: p.img || PLACEHOLDER[p.category] || 'https://source.unsplash.com/800x1000/?fashion'});
 
   function platformFrom(url){
     try{
@@ -206,6 +217,8 @@
     if (/FBAN|FBAV|Instagram|FB_IAB|FBAN\/Messenger/i.test(ua)) return 'ดูเหมือนคุณเปิดจาก <b>Facebook/Instagram</b>';
     return '';
   }
+
+  
   function buildTips(){
     const {isIOS,isAndroid} = detectOS();
     const appHint = inAppHint();
@@ -218,7 +231,7 @@
     } else {
       lines.push('ถ้าเปิดจากแอปในตัว (in-app) แนะนำคัดลอกลิงก์แล้วเปิดในเบราว์เซอร์หลัก (Chrome/Safari).');
     }
-    lines.push('<span class="text-muted">* เพื่อให้การนับคลิก/คอมมิชชั่นถูกต้อง</span>');
+
     return lines.join('<br>');
   }
 
@@ -243,41 +256,47 @@
   elBtnGoOn.addEventListener('click', ()=>{
     affModal.hide();
     if (elChkNoMore.checked) sessionStorage.setItem(SESSION_NOTICE_KEY, '1');
-    window.open(pendingURL, '_blank');
+    window.open(pendingURL, '_blank', 'noopener');
   });
 
-  // ===== Render Grid =====
-  const GRID = q('#grid');
-  let allItems = PRODUCTS.map(withImage);
+  // ===== Render NEW (แนวนอน) =====
+  const newScroll = q('#newScroll');
 
-  function card(p){
+  function cardHTML(p){
     const pf = platformFrom(p.aff);
-    const priceHTML = p.price ? `฿${Number(p.price).toLocaleString('th-TH')}`
+    const priceHTML = (typeof p.price === 'number' && !isNaN(p.price))
+      ? `฿${Number(p.price).toLocaleString('th-TH')}`
       : `<span class="badge text-bg-light">ดูราคาที่ร้าน</span>`;
-    return `
-      <div class="col-6 col-md-4 col-lg-3">
-        <div class="card product-card rounded-4 h-100" data-title="${p.title}" data-clip="${p.clip}" data-category="${p.category}" data-price="${p.price ?? ''}">
-          <img class="product-thumb" src="${p.img}" alt="${p.title}">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-1">
-              <span class="clip-tag">#${p.clip}</span>
-              <span class="badge ${pf.badge} platform"><i class="bi ${pf.icon} me-1"></i>${pf.name}</span>
-            </div>
-            <h6 class="card-title">${p.title}</h6>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="fw-bold">${priceHTML}</div>
-              <a href="${p.aff}" class="btn btn-sm btn-dark aff-link" data-aff="${p.aff}">ไปหน้าร้าน</a>
-            </div>
-          </div>
+
+    return `<div class="card product-card rounded-4" data-clip="${p.clip}">
+      <img class="product-thumb" src="${p.img}" alt="${p.title}">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <h6 class="card-title mb-0">${p.title}</h6>
+          <span class="clip-tag">#${String(p.clip).padStart(3,'0')}</span>
         </div>
-      </div>`;
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="h6 mb-0">${priceHTML}</div>
+          <a class="btn btn-sm btn-dark aff-link" href="${p.aff}" data-aff="${p.aff}">
+            <i class="bi bi-box-arrow-up-right me-1"></i>ไปที่ร้าน
+          </a>
+        </div>
+        <div class="mt-2"><span class="badge ${pf.badge}"><i class="bi ${pf.icon} me-1"></i>${pf.name}</span></div>
+      </div>
+    </div>`;
   }
 
-  function render(list){
-    GRID.innerHTML = list.map(card).join('');
-    qa('.aff-link', GRID).forEach(a=>{
+  // โชว์ 8 ชิ้นแรก (จะเปลี่ยนจำนวนก็ได้)
+  const NEW_LIST = PRODUCTS.slice(0, 8);
+  newScroll.innerHTML = NEW_LIST.map(cardHTML).join('');
+  q('#scrollLeft')?.addEventListener('click',()=>newScroll.scrollBy({left:-320,behavior:'smooth'}));
+  q('#scrollRight')?.addEventListener('click',()=>newScroll.scrollBy({left:320,behavior:'smooth'}));
+
+  // hook ปุ่ม aff-link (แสดงโมดัลครั้งแรกของ session)
+  function bindAff(container=document){
+    qa('.aff-link', container).forEach(a=>{
       a.addEventListener('click', (e)=>{
-        const url = a.getAttribute('data-aff');
+        const url = a.getAttribute('data-aff') || a.getAttribute('href');
         if (!sessionStorage.getItem(SESSION_NOTICE_KEY)) {
           e.preventDefault();
           showAffNotice(url);
@@ -285,20 +304,33 @@
       });
     });
   }
+  bindAff(newScroll);
 
-  render(allItems);
-
-  // ===== Clip filter (#001, #002...) =====
-  const elClip = q('#clipFilter');
-  q('#clipGo').addEventListener('click', ()=>{
-    const kw = (elClip.value||'').trim().toLowerCase();
-    const list = kw ? allItems.filter(p => (p.clip||'').toLowerCase().includes(kw)) : allItems;
-    render(list);
-  });
-  q('#clipReset').addEventListener('click', ()=>{
-    elClip.value = '';
-    render(allItems);
-  });
+  // ===== Filter คอลเลกชัน + ไปหน้า htmlN.html =====
+  (() => {
+    const tiles=qa('#collectionTiles .collection-tile');
+    const input=q('#clipFilter');
+    const go=q('#clipGo');
+    const reset=q('#clipReset');
+    const pad3=v=>{v=(v||'').toString().replace(/\D/g,''); return v? v.padStart(3,'0'):''};
+    function apply(){
+      const code=pad3(input.value);
+      tiles.forEach(t=>{
+        const show=!code || (t.querySelector('.clip-tag')?.textContent.trim()===code);
+        t.closest('.col-12').classList.toggle('d-none',!show);
+      });
+    }
+    input?.addEventListener('input', apply);
+    reset?.addEventListener('click',()=>{input.value='';apply()});
+    go?.addEventListener('click',()=>{
+      const code=pad3(input.value);
+      if(!code){apply();return}
+      const hit=tiles.find(t=>t.getAttribute('data-clip')===code);
+      if(hit){hit.scrollIntoView({behavior:'smooth',block:'center'})}
+      const n=parseInt(code,10); if(n>0) location.href=`html${n}.html`;
+    });
+    input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go.click()}});
+  })();
 </script>
 </body>
 </html>
